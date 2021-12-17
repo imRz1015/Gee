@@ -2,8 +2,8 @@
  * @Author: tangqimin
  * @Date: 2021-11-18 17:05:25
  * @Description:
- * @LastEditTime: 2021-12-11 17:12:08
- * @LastEditors: tangqimin
+ * @LastEditTime: 2021-12-17 15:36:19
+ * @LastEditors: Please set LastEditors
  * @FilePath: \Gee\gee\router.go
  */
 package gee
@@ -24,6 +24,8 @@ func newRouter() *router {
 		handlers: make(map[string]HandlerFunc)}
 }
 
+// 把路由拆分：  /home/getList/detail拆分成为 parts = ["home","getList","detail"]
+// 如果遇到通配符，则后面的就不重要了 比如  /home/*/detail 的处理结果为parts=["home","*"]
 func parsePattern(pattern string) []string {
 	vs := strings.Split(pattern, "/")
 	parts := make([]string, 0)
@@ -42,6 +44,7 @@ func (r *router) addRoute(method string, pattern string, handler HandlerFunc) {
 	parts := parsePattern(pattern)
 	key := method + "-" + pattern
 	_, ok := r.roots[method]
+	// 如果路由表里面没有这个路由，就新增一个
 	if !ok {
 		r.roots[method] = &node{}
 	}
@@ -74,10 +77,12 @@ func (r *router) getRoute(method string, path string) (*node, map[string]string)
 }
 
 func (r *router) handle(c *Context) {
-	key := c.Method + "-" + c.Path
-	if handler, ok := r.handlers[key]; ok {
-		handler(c)
+	n, params := r.getRoute(c.Method, c.Path)
+	if n != nil {
+		c.Params = params
+		key := c.Method + "-" + n.pattern
+		r.handlers[key](c)
 	} else {
-		c.String(http.StatusNotFound, "404 NOT FOUND:%s\n", c.Path)
+		c.String(http.StatusNotFound, "404 NOT FOUND: %s\n", c.Path)
 	}
 }

@@ -2,8 +2,8 @@
  * @Author: tangqimin
  * @Date: 2021-11-18 18:13:02
  * @Description:
- * @LastEditTime: 2021-12-11 17:12:03
- * @LastEditors: tangqimin
+ * @LastEditTime: 2021-12-17 14:19:59
+ * @LastEditors: Please set LastEditors
  * @FilePath: \Gee\gee\trie.go
  */
 
@@ -18,6 +18,7 @@ type node struct {
 	isWild   bool    // 是否精确匹配，part 含有 : 或 * 时为true
 }
 
+// 匹配node节点的children，如果有part，则返回这个childNode节点
 func (n *node) matchChild(part string) *node {
 	for _, child := range n.children {
 		if child.part == part || child.isWild {
@@ -27,6 +28,7 @@ func (n *node) matchChild(part string) *node {
 	return nil
 }
 
+// 匹配node节点的children，把所有匹配到的childNode都返回
 func (n *node) matchChildren(part string) []*node {
 	nodes := make([]*node, 0)
 	for _, child := range n.children {

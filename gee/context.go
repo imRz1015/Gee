@@ -2,8 +2,8 @@
  * @Author: tangqimin
  * @Date: 2021-11-18 16:42:28
  * @Description:
- * @LastEditTime: 2021-12-11 17:12:29
- * @LastEditors: tangqimin
+ * @LastEditTime: 2021-12-17 14:28:10
+ * @LastEditors: Please set LastEditors
  * @FilePath: \Gee\gee\context.go
  */
 package gee
@@ -21,7 +21,13 @@ type Context struct {
 	Req        *http.Request
 	Path       string
 	Method     string
+	Params     map[string]string
 	StatusCode int
+}
+
+func (c *Context) Param(key string) string {
+	value, _ := c.Params[key]
+	return value
 }
 
 func newContext(w http.ResponseWriter, req *http.Request) *Context {
