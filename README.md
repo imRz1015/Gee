@@ -1,2 +1,3 @@
 # Gee
-a repository for study golang 
+
+一个简单的Web框架
